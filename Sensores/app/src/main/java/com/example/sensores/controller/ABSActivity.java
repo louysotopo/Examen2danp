@@ -4,6 +4,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +23,9 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 
 public class ABSActivity extends AppCompatActivity {
+    SensorManager sensorManager;
+    Sensor sensor;
+    SensorEventListener sensorEventListener;
     private ImageButton question;
     private TextView count;
     private Button star_end;
@@ -27,7 +34,9 @@ public class ABSActivity extends AppCompatActivity {
     private AlertDialog.Builder instructions;
     private int n;
     private  int state;
+    private boolean down;
     private MqttAndroidClient client;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +45,7 @@ public class ABSActivity extends AppCompatActivity {
         initComponents();
         initMethods();
         connect();
+        initSensor();
     }
     private void initComponents() {
         question = findViewById(R.id.imageButton_question_abs);
@@ -46,7 +56,10 @@ public class ABSActivity extends AppCompatActivity {
         instructions = new AlertDialog.Builder(this);
         n = 0;
         state = 0;
+        down = false;
+
     }
+
     private void initMethods() {
         question.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,13 +111,41 @@ public class ABSActivity extends AppCompatActivity {
                 }).show();
     }
     private void start_sensor(){
-
+        sensorManager.registerListener(sensorEventListener,sensor,2000*1000);
     }
     private void stop_sensor(){
+        sensorManager.unregisterListener(sensorEventListener);
+    }
+    private  void initSensor(){
+        sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        if (sensor == null){
+            Toast.makeText(getApplicationContext(),"No hay sensor de proximidad",Toast.LENGTH_LONG).show();
+        }else{
+            sensorEventListener = new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent event) {
+                    if(event.values[0]<sensor.getMaximumRange()){
+                        if (!down){
+                            n = n + 1;
+                            down = true;
+                            count.setText(n+"");
+                        }
+                    }else{
+                        down = false;
+                    }
+                }
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+                }
+            };
+        }
 
     }
     private  void send_to_server(){
-        ABS abs = new ABS(12,"00:00","2021-06-18","2021-06-18");
+        ABS abs = new ABS(n,"00:00","2021-06-18","2021-06-18");
         if (client.isConnected()){
             try{
                 int qos =0;
