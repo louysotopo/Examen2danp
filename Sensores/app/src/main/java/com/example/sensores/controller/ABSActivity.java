@@ -1,8 +1,5 @@
 package com.example.sensores.controller;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -15,12 +12,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sensores.MainActivity;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.sensores.R;
 import com.example.sensores.model.ABS;
+import com.example.sensores.utilities.LowPass;
 
-import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
 public class ABSActivity extends AppCompatActivity {
     SensorManager sensorManager;
@@ -36,7 +38,7 @@ public class ABSActivity extends AppCompatActivity {
     private  int state;
     private boolean down;
     private MqttAndroidClient client;
-
+    private LowPass lowPass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class ABSActivity extends AppCompatActivity {
         n = 0;
         state = 0;
         down = false;
+        lowPass = new LowPass();
 
     }
 
@@ -125,7 +128,8 @@ public class ABSActivity extends AppCompatActivity {
             sensorEventListener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
-                    if(event.values[0]<sensor.getMaximumRange()){
+                    double value = lowPass.add_pass(event.values[0]);
+                    if(value<sensor.getMaximumRange()){
                         if (!down){
                             n = n + 1;
                             down = true;
