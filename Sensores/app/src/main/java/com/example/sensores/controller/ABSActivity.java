@@ -1,5 +1,8 @@
 package com.example.sensores.controller;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.DialogInterface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -12,17 +15,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.sensores.MainActivity;
 import com.example.sensores.R;
 import com.example.sensores.model.ABS;
 import com.example.sensores.utilities.LowPass;
 
+import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
 public class ABSActivity extends AppCompatActivity {
     SensorManager sensorManager;
@@ -39,6 +38,7 @@ public class ABSActivity extends AppCompatActivity {
     private boolean down;
     private MqttAndroidClient client;
     private LowPass lowPass;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +94,7 @@ public class ABSActivity extends AppCompatActivity {
     }
     private void  ShowInstructions(){
         instructions.setTitle("Instrucciones");
-        instructions.setMessage("Para empezar los ejercicios deberas colocar tu celular pantalla arriva en el suelo, luego presionar el boton Empezar y continuar haciendo Planchas sobre el celular").show();
+        instructions.setMessage("Para empezar los ejercicios deberás colocar tu celular pantalla arriba en el suelo, luego presionar el botón Empezar y continuar haciendo Planchas sobre el celular que registrará cada vez que llegues cerca del suelo usando el sensor de proximidad del dispositivo.").show();
     }
     private void  question_to_send_to_server(){
         builder_question.setTitle("Guardar");
@@ -149,7 +149,7 @@ public class ABSActivity extends AppCompatActivity {
 
     }
     private  void send_to_server(){
-        ABS abs = new ABS(n,"00:00","2021-06-18","2021-06-18");
+        ABS abs = new ABS(n,"21:35","21:40","2021-06-3");
         if (client.isConnected()){
             try{
                 int qos =0;

@@ -28,7 +28,7 @@
                 android:layout_margin="10dp"
                 android:background="#00FFFFFF"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/muscculos" />
+                app:srcCompat="@drawable/planchas_d" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -69,7 +69,7 @@
                 android:id="@+id/textView8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Podometro"
+                android:text="Trotar"
                 android:textAlignment="center"
                 android:textColor="#3F51B5"
                 android:textSize="24sp" />

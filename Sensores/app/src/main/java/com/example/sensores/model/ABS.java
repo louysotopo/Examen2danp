@@ -47,11 +47,10 @@ public class ABS {
 
     @Override
     public String toString() {
-        return "abs{" +
-                "count=" + count +
-                ", horaS='" + horaS + '\'' +
-                ", horaF='" + horaF + '\'' +
-                ", date='" + date + '\'' +
-                '}';
+        return "{ \"abs\"{ \"hourstart\" = \""+ horaS + '\"' +
+                ", \"hourend\":\"" + horaF + '\"' +
+                ", \"date\":\"" + date + '\"' +
+                ", \"nabs\":" + count +
+                "} }";
     }
 }

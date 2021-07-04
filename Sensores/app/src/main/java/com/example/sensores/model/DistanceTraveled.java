@@ -1,5 +1,5 @@
 package com.example.sensores.model;
-
+import org.json.*;
 public class DistanceTraveled {
     private int count;
     private String horaS;
@@ -47,12 +47,13 @@ public class DistanceTraveled {
 
     @Override
     public String toString() {
-        return "DistanceTraveled{" +
-                "count=" + count +
-                ", horaS='" + horaS + '\'' +
-                ", horaF='" + horaF + '\'' +
-                ", date='" + date + '\'' +
-                '}';
+        JSONArray array =  new JSONArray();
+        //JSONArray
+        return "{ \"steps\"{ \"hourstart\" = \""+ horaS + '\"' +
+                ", \"hourend\":\"" + horaF + '\"' +
+                ", \"date\":\"" + date + '\"' +
+                ", \"nabs\":" + count +
+                "} }";
     }
 }
 

@@ -1,22 +1,14 @@
 package com.example.sensores.utilities;
 
-
-import java.util.*;
-
 public class LowPass {
-
     private double prev_value;
     private long prev_date;
     private boolean stated;
     private final double tau = 1.0;
-
-
     public LowPass(){
-       this.prev_value = 0;
-       this.stated = true;
+        this.prev_value = 0;
+        this.stated = true;
     }
-
-
     public double add_pass(double value){
         this.prev_value = this.low_pass(this.prev_value, value);
         return this.prev_value;
